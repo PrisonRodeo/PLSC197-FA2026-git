@@ -151,7 +151,7 @@ wdi$iso2c<-NULL
 
 # Get rid of unidentified rows:
 
-wdi<-wdi[is.na(wdi$Year)==FALSE,]
+wdi<-wdi[is.na(wdi$Year)==FALSE,] 
 
 # Put ISO3 + Year + Region at the front of the data:
 
