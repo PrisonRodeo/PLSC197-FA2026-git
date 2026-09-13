@@ -160,6 +160,6 @@ wdi<-wdi[,c("ISO3","Year","Region",setdiff(names(wdi),c("ISO3","Year","Region"))
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Output the CSV file:
 
-write.csv(wdi,"Data/WDI2019.csv",row.names=FALSE)
+write.csv(wdi,"Data/WDI2019.csv",row.names=FALSE,na="")
 
 # FIN!
