@@ -1,7 +1,7 @@
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Intro things                                    ####
 #
-# PLSC 197 / SODA 197N -- Spring 2026
+# PLSC 197 / SODA 110N -- Fall 2026
 #
 # Social Data, Technology, and Artificial Intelligence
 # Prof. Christopher Zorn
@@ -23,10 +23,10 @@
 # NOTE: This code can take a hot second to
 # run, depending on how fast the World Bank's
 # API is operating on any given day...so expect
-# to wait 5-10 minutes (or more) for it to
+# to wait 1-2 minutes (or more) for it to
 # run.
 #
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Packages: This code checks to see if the packages
 # needed are installed. If not, it installs them;
 # if so, it prints a little smiley face. :)
@@ -61,7 +61,7 @@ rm(i)
 # setwd("~/Dropbox (Personal)/SDTAI/Data")
 #
 # or whatever.
-#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Grab the data...                              ####
 #
 # Get the relevant data / indicators (add variables
@@ -89,55 +89,77 @@ wdi<-WDI(country="all",
                      "Imports"="NE.IMP.GNFS.ZS", # Imports, % of GDP
                      "FDIIn"="BX.KLT.DINV.WD.GD.ZS", # FDI in, % of GDP
                      "AgriEmployment"="SL.AGR.EMPL.ZS", # Percent of total employment in agriculture
-                     "NetAidReceived"="DT.ODA.ALLD.KD", # Net official dev. aid received (constant 2018 $US)
                      "MobileCellSubscriptions"="IT.CEL.SETS.P2", # Mobile / cellular subscriptions per 100 people
                      "NaturalResourceRents"="NY.GDP.TOTL.RT.ZS", # Total natural resource rents (% of GDP)
-                     "MilitaryExpenditures"="MS.MIL.XPND.GD.ZS", # Military expenditures, % of GDP
                      "GovtExpenditures"="NE.CON.GOVT.ZS", # Government Expenditures, % of GDP
-                     "PublicEdExpend"="SE.XPD.TOTL.GD.ZS", # Public expenditure on education (% of GDP)
                      "PublicHealthExpend"="SH.XPD.GHED.GD.ZS", # Public expenditure on health (% of GDP)
-                     "HIVDeaths"="SH.DYN.AIDS.DH", # Deaths due to HIV/AIDS (UNAIDS estimate)
-                     "MalariaRate"="SH.MLR.INCD.P3", # Incidence of malaria (per 1K at risk)
-                     "PoliticalStability"="PV.EST", # Political Stability and Absence of Violence/Terrorism
-                     "RuleOfLaw"="RL.EST", # Rule of Law
-                     "PaidParentalLeave"="SH.PAR.LEVE.AL", # Paid Parental Leave (0=no,1=yes)
-                     "WomenEmployDiscrim"="SG.LAW.NODC.HR", # Law prohibits employment discrimination based on sex
-                     "WomenEqualPay"="SG.LAW.EQRM.WK", # Law mandates equal remuneration by sex
-                     "WomenDivorce"="SG.OBT.DVRC.EQ"), # A woman can obtain a divorce in the same way as a man
-                start=2019,end=2019)
+                     "PoliticalStability"="GOV_WGI_PV.SC", # Political Stability and Absence of Violence/Terrorism
+                     "RuleOfLaw"="GOV_WGI_RL.SC", # Rule of Law
+                     "ControlOfCorruption"="GOV_WGI_CC.SC"), # Control of Corruption
+                start=2019,end=2019,extra=FALSE)
+
+# Get a couple more things, and merge:
+
+country_info <- WDI::WDI_data$country[, c("iso3c", "region", "income")]
+wdi <- merge(wdi, country_info, by = "iso3c", all.x = TRUE)
+rm(country_info)
+
+# Create discrete variables:
+
+wdi$Region<-wdi$region      # Region
+wdi$region<-NULL
+wdi$IncomeLevel<-wdi$income # Income level
+wdi$income<-NULL
+wdi$RuralLevel<-ifelse(wdi$RuralPopulation>median(wdi$RuralPopulation,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+wdi$UrbanLevel<-ifelse(wdi$UrbanPopulation>median(wdi$UrbanPopulation,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+wdi$RuralLevel<-ifelse(wdi$RuralPopulation>median(wdi$RuralPopulation,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+wdi$PopGrowthLevel<-ifelse(wdi$PopGrowth>median(wdi$PopGrowth,na.rm=TRUE),
+                      paste("High"),paste("Low"))
+wdi$EconGrowthLevel<-ifelse(wdi$GDPPerCapGrowth>median(wdi$GDPPerCapGrowth,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+wdi$TradeLevel<-ifelse(wdi$TotalTrade>median(wdi$TotalTrade,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+wdi$AgricultureLevel<-ifelse(wdi$AgriEmployment>median(wdi$AgriEmployment,na.rm=TRUE),
+                       paste("High"),paste("Low"))
+
 
 # Remove aggregates (e.g., "World," "Arab World," etc.):
 
-wdi$ISO3<-countrycode(wdi$iso2c,origin="iso2c",destination="iso3c")
-wdi<-wdi[is.na(wdi$ISO3)==FALSE,]
+wdi<-wdi[wdi$Region!="Aggregates",]
 
-# Relabel year:
+# Rename ISO3:
+
+wdi$ISO3<-wdi$iso3c
+wdi$iso3c<-NULL
+
+# Fix Region labels:
+
+wdi$Region<-ifelse(wdi$Region=="Middle East, North Africa, Afghanistan & Pakistan",
+                   paste("Middle East & North Africa"),wdi$Region)
+
+# Rename year:
 
 wdi$Year<-wdi$year
 wdi$year<-NULL
 
-# Delete ISO2:
+# remove iso2c:
 
 wdi$iso2c<-NULL
 
-# Create a "region" variable
+# Get rid of unidentified rows:
 
-wdi$Region<-countrycode(wdi$ISO3,origin="iso3c",destination="region")
+wdi<-wdi[is.na(wdi$Year)==FALSE,]
 
 # Put ISO3 + Year + Region at the front of the data:
 
-nc<-ncol(wdi)
-sb<-seq(nc-2,nc)
-se<-seq(1,(nc-3))
-wdi<-wdi[,c(sb,se)]
-rm(nc,sb,se)
+wdi<-wdi[,c("ISO3","Year","Region",setdiff(names(wdi),c("ISO3","Year","Region")))]
 
-# remove the "iso3c" variable:
-
-wdi$iso3c<-NULL
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Output the CSV file:
 
-write.csv(wdi,"WDI2019.csv",row.names=FALSE)
+write.csv(wdi,"Data/WDI2019.csv",row.names=FALSE)
 
 # FIN!
