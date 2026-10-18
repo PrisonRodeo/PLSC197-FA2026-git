@@ -1,4 +1,4 @@
-# PLSC197 / SoDA 197N: Social Data, Technology, and Artificial Intelligence
+# PLSC197 / SoDA 110N: Social Data, Technology, and Artificial Intelligence
 
 This is the github repository for the Fall 2026 version of PLSC 197 / SoDA 110N: Social Data, Technology, and Artificial Intelligence. This site contains all relevant course materials for the class.
 
