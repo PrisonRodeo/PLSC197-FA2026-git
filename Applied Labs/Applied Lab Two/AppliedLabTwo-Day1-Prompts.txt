@@ -1,0 +1,57 @@
+PLSC 197 / SODA 110N -- Fall 2026
+Applied Lab #2
+
+The text between the "++" symbols is NOT to be pasted into the prompt; 
+instead, the condition is to be entered / selected into the Google Form:
+
+https://forms.gle/e9t97SLSGCaM83KN6
+
+Everything after that -- the text that follows -- should be entered into
+the LLM you are using for this lab.
+
+===========
+
+++ Prompt #1: Condition = "Baseline" ++
+
+Explain what a mortgage is.
+
+
+===========
+
+++ Prompt #2: Condition = "Persona" ++
+
+You are a financial advisor speaking to a recent college graduate with no experience investing or managing debt. You value plain language and want to avoid making your client feel embarrassed about what they don’t know. Explain what a mortgage is.
+
+
+===========
+
+++ Prompt #3: Condition = "Technical" ++
+
+Here is an example of the explanatory style that I would like you to replicate, as applied to the concept of compound interest:
+
+Compound interest refers to the reinvestment of accrued interest into the principal balance, such that subsequent interest calculations apply to an incrementally larger base. This recursive accumulation distinguishes compounding from simple interest, which is calculated solely on the original principal.
+
+Now: Explain what a mortgage is.
+
+
+===========
+
+++ Prompt #4: Condition = "Casual" ++
+
+Here is an example of the explanatory style that I would like you to replicate, as applied to the concept of compound interest:
+
+OK so basically, compound interest is when your money makes money, and then that money also makes money. Like, it just keeps snowballing. That's why people are always saying to start saving early — because the longer you wait, the less time your money has to do its thing.
+
+Now: Explain what a mortgage is.
+
+
+===========
+
+++ Prompt #5: Condition = "Cautious" ++
+
+Here is an example of the explanatory style that I would like you to replicate, as applied to the concept of compound interest:
+
+It may be helpful to think of compound interest as a process where your earnings are periodically added back to your balance, potentially allowing future earnings to be calculated on a slightly larger amount. That said, the actual impact in any given situation will depend on the rate, the compounding frequency, and other terms that are worth reviewing carefully before drawing any conclusions.
+
+Now: Explain what a mortgage is.
+
