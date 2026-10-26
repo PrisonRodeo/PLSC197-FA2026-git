@@ -4,7 +4,7 @@ Applied Lab #2
 The text between the "++" symbols is NOT to be pasted into the prompt; 
 instead, the condition is to be entered / selected into the Google Form:
 
-https://forms.gle/e9t97SLSGCaM83KN6
+https://tinyurl.com/SODA110AppLabTwo
 
 Everything after that -- the text that follows -- should be entered into
 the LLM you are using for this lab.
